@@ -1,6 +1,7 @@
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
@@ -22,9 +23,26 @@ fun main() {
             gzip()
         }
         routing {
-            get("/hello") {
-                call.respondText("Hello, API!")
+            route(ShoppingListItem.path) {
+                get {
+                    call.respond(shoppingList)
+                }
+                post {
+                    shoppingList += call.receive<ShoppingListItem>()
+                    call.respond(HttpStatusCode.OK)
+                }
+                delete("/{id}") {
+                    val id = call.parameters["id"]?.toInt() ?: error("Invalid delete request")
+                    shoppingList.removeIf {it.id == id}
+                    call.respond(HttpStatusCode.OK)
+                }
             }
         }
     }.start(wait = true)
 }
+
+val shoppingList = mutableListOf(
+    ShoppingListItem("Cucumbers 🥒", 1),
+    ShoppingListItem("Tomatoes 🍅", 2),
+    ShoppingListItem("Orange Juice 🍊", 3)
+)
