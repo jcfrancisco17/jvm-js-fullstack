@@ -3,8 +3,8 @@ import kotlinx.coroutines.launch
 import kotlinx.html.js.onClickFunction
 import react.Props
 import react.dom.h1
-import react.dom.ul
 import react.dom.li
+import react.dom.ul
 import react.fc
 import react.useEffectOnce
 import react.useState
